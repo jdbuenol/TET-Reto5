@@ -58,9 +58,12 @@ class MRCompaniesValue(MRJob):
                 blackDayValue = lowestDayValue[date_min]
                 blackDay = date_min
         
-        stdout.write("Companies that always go up: " + str(alwaysUp) + '\n')
-        stdout.write("Black Day: " + blackDay + ". Companies with lowest value: " + str(blackDayValue) + '\n')
-    
+        l = {}
+        l["alwaysUp"] = str(alwaysUp)
+        l["BlackDay"] = str(blackDay)
+        l["CompaniesWithLowestValueInBlackDay"] = str(blackDayValue)
+        yield None, l
+
     def steps(self):
         return [
             MRStep(mapper=self.mapper_company,
