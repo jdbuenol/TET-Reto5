@@ -38,23 +38,16 @@ class MRCompaniesValue(MRJob):
         stdout.write(msg)
         result["alwaysUp"] = always_up
         result["name"] = company
-        yield date_min, result
+        yield date_min, (always_up, company)
     
     def reducer_always_up(self, date_min, companies):
-        alwaysUp = []
-
-        for company in companies:
-            if company["alwaysUp"]:
-                alwaysUp.append(company["name"])
-        
-        stdout.write("companies always up:" + alwaysUp)
-        yield None, None
+        yield None, 5
 
     def steps(self):
         return [
             MRStep(mapper=self.mapper_company,
                    reducer=self.reducer_company),
-            MRStep(reducer=self.reducer_black_day)
+            MRStep(reducer=self.reducer_always_up)
         ]
 
 if __name__ == '__main__':
