@@ -34,14 +34,36 @@ class MRCompaniesValue(MRJob):
         result["minValueDate"] = date_min
         result["maxValue"] = maxvalue
         result["maxValueDate"] = date_max
-        msg = str(company) + " " + str(result) + '\n'
-        stdout.write(msg)
-        result["alwaysUp"] = always_up
-        result["name"] = company
-        yield date_min, (always_up, company)
+        msg = company + " " + str(result) + '\n'
+        l = {}
+        l["msg"] = msg
+        l["minDate"] = date_min
+        l["alwaysUp"] = always_up
+        l["name"] = company
+        yield  None, l
     
     def reducer_always_up(self, date_min, companies):
-        yield None, 5
+        alwaysUp = []
+        lowestDays = {}
+        blackDay = ''
+        blackDayValue = 0
+
+        for company in companies:
+            stdout.write(company["msg"])
+            if company["alwaysUp"]:
+                alwaysUp.append(company["name"])
+            
+            date_min = company["minDate"]
+            if date_min not in lowestDays:
+                lowestDays[date_min] = 1
+            else:
+                lowestDays[date_min] += 1
+            if lowestDays[date_min] > blackDayValue:
+                blackDay = date_min
+                blackDayValue = lowestDays[date_min]
+        
+        stdout.write("Companies always up: " + str(alwaysUp) + '\n')
+        stdout.write("Black day: " + blackDay + ". Number of companies with lowest value: " + str(blackDayValue) + '\n')
 
     def steps(self):
         return [
