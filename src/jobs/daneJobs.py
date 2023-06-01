@@ -40,8 +40,3 @@ class MRSEPerEmployee(MRJob):
             if not sector in recordedSectors:
                 recordedSectors.append(sector)
         yield "Number of SE of employee #" + idemp, len(recordedSectors)
-
-if __name__ == '__main__':
-    MRAverageEmployee.run()
-    MRAverageSE.run()
-    MRSEPerEmployee.run()
